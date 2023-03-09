@@ -1,5 +1,58 @@
 .page-container{
+    box-sizing: border-box;
+    padding: 30px 0;
+
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 255, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#title{
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 50%;
+    justify-content: center;
+}
+
+#title > div{
+    font-size: 5em;
+    font-weight: 700;
+}
+
+#title > div:nth-of-type(2){
+    align-self: flex-end;
+}
+
+#switcing-section > div{
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#switcing-section > div > button{
+    width: 300px;
+    height: 50px;
+}
+
+#switcing-section > div > label{
+    width: 300px;
+    display: flex;
+    gap: 10px;
+    height: 30px;
+}
+
+#switcing-section > div > label > p{
+    width: 80px;
+    height: 20px;
+}
+
+#switcing-section > div > label > input{
+    flex-grow: 1;
 }
