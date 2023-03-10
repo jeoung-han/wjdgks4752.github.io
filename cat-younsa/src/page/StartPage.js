@@ -3,9 +3,9 @@ import React, { useState } from "react";
 
 function BtnSection(props) {
     return (
-        <div>
-            <button onClick={props.onClick}>game start</button>
-            <button>ranck</button>
+        <div id='btn-box'>
+            <button onClick={props.onClick}>게임시작</button>
+            <button>기록확인</button>
         </div>
     );
 }
@@ -13,9 +13,9 @@ function BtnSection(props) {
 function LoginSection(props) {
     return (
         <div>
-            <label htmlFor=""><p>id</p><input type="text" /></label>
-            <label htmlFor=""><p>password</p><input type="password" /></label>
-            <button onClick={props.onClick}>login</button>
+            <label htmlFor=""><p>ID</p><input type="text" /></label>
+            <label htmlFor=""><p>PASSWORD</p><input type="password" /></label>
+            <button onClick={props.onClick}>시작하기</button>
         </div>
     );
 }
@@ -26,8 +26,7 @@ function StartPage(props) {
     return (
         <div id="StartPage" className="page-container">
             <section id='title'>
-                <div>고양이</div>                
-                <div>용사</div>
+
             </section>
             <section id='switcing-section'>
                 {content}

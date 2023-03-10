@@ -1,89 +1,64 @@
-let leftMove;
-let rightMove;
-let topMove;
-let downMove;
-let atkInterval;
+function getStyleSlicePx(element, style) {
+    return parseFloat(getComputedStyle(element)[style].replace("px"));
+}
 
-let isPressLeft = false;
-let isPressRight = false;
-let isPressUp = false;
-let isPressDown = false;
-
-let LkeyDownTime = 0;
-let RkeyDownTime = 0;
-let DkeyDownTime = 0;
-let UkeyDownTime = 0;
+function setStyleAddPx(element, style, num) {
+    element.style[style] = num + "px";
+}
 
 let catStatus;
 
-function setKeyPress(key, isPress) {
+const directionOption = {
+
+    leftInterval : null,
+    rightInterval : null,
+    upInterval : null,
+    downInterval : null,
+
+    leftkeyDownTime : 0,
+    rightkeyDownTime : 0,
+    upkeyDownTime : 0,
+    downkeyDownTime : 0,
+
+    leftIsPress : false,
+    rightIsPress : false,
+    upIsPress : false,
+    downIsPress : false,
+
+    leftIntervalClear : ()=>{clearInterval(this.leftInterval)},
+    rightIntervalClear : ()=>{clearInterval(this.rightInterval)},
+    upIntervalClear : ()=>{clearInterval(this.upInterval)},
+    downIntervalClear : ()=>{clearInterval(this.downInterval)}
+}
+
+function catMove(key, sum) {
     const cat = document.querySelector("#cat");
-    if(cat.style.left === "") cat.style.left = "0%";
-    if(cat.style.top === "") cat.style.top = "0%";
-
     const speed = catStatus.speed;
-    switch (key) {
-        case "left":
-            if(isPress){
-                LkeyDownTime = 0;
-                leftMove = setInterval(() => {
-                    let left = parseFloat(cat.style.left.substring(0, cat.style.left.length - 1)) - (4 * speed * 0.9);
-                    left = left < 0 ? 0 : left;
-                    cat.style.left = left + "px";
-                    LkeyDownTime += 45;
-                }, 45);
-            }else{
-                clearInterval(leftMove);
-            }
-            break;
 
-        case "right":
-            if(isPress){
-                RkeyDownTime = 0;
-                rightMove = setInterval(() => {
-                    let left = parseFloat(cat.style.left.substring(0, cat.style.left.length - 1)) + (4 * speed * 0.9);
-                    left = left > 1000 - 60 ? 1000 - 60 : left;
-                    cat.style.left = left + "px";
-                    RkeyDownTime += 45;
-                }, 45);
-            }else{
-                clearInterval(rightMove);
-            }
-            break;
-
-        case "up":
-            if(isPress){
-                UkeyDownTime = 0;
-                topMove = setInterval(() => {
-                    let top = parseFloat(cat.style.top.substring(0, cat.style.top.length - 1)) - (4 * speed * 0.9);
-                    top = top < 0 ? 0 : top;
-                    cat.style.top = top + "px";
-                    UkeyDownTime += 45;
-                }, 45);
-            }else{
-                clearInterval(topMove);
-            }
-            break;
-
-        case "down":
-            if(isPress){
-                DkeyDownTime = 0;
-                downMove = setInterval(() => {
-                    let top = parseFloat(cat.style.top.substring(0, cat.style.top.length - 1)) + (4 * speed * 0.9);
-                    top = top > 600 - 60 ? 600 - 60 : top;
-                    cat.style.top = top + "px";
-                    DkeyDownTime += 45;
-                }, 45);
-            }else{
-                clearInterval(downMove);
-            }
-            break;
+    if(!directionOption[key + "IsPress"]) {clearInterval(directionOption[key+"Interval"]); return;}
     
-        default: break;
-    }
+    const leftOrTop = key === "left" ||  key === "right" ? "left" : "top";
+
+    directionOption[key+"keyDownTime"] = 0;
+    directionOption[key +"Interval"] = setInterval(() => {
+        
+        let movePx = sum === "+" ? getStyleSlicePx(cat, leftOrTop) + (4 * speed * 0.9) : getStyleSlicePx(cat, leftOrTop) - (4 * speed * 0.9);
+        switch (key) {
+            case "left":    movePx = movePx = movePx < 0 ? 0 : movePx;                  break;
+            case "right":   movePx = movePx = movePx > 1000 - 60 ? 1000 - 60 : movePx;  break;
+            case "up":      movePx = movePx = movePx < 0 ? 0 : movePx;                  break;
+            case "down":    movePx = movePx = movePx > 600 - 60 ? 600 - 60 : movePx;    break;
+            default: break;
+        }
+
+        setStyleAddPx(cat, leftOrTop, movePx);
+        directionOption[key+"keyDownTime"] += 45;
+
+    }, 45);
 }
 
 let canAttack = true;
+let atkInterval;
 function attack(key) {
     const cat = document.querySelector("#cat");
     if(!canAttack) return;
@@ -93,8 +68,8 @@ function attack(key) {
     div.classList.add("fish");
     
     div.style.position = "absolute";
-    div.style.left = parseInt(cat.style.left.substring(0,cat.style.left.length-1)) + 30 + "px";
-    div.style.top = parseInt(cat.style.top.substring(0,cat.style.top.length-1)) + 30 + "px";
+    div.style.left = getStyleSlicePx(cat, "left") + 30 - 7.5 + "px";
+    div.style.top = getStyleSlicePx(cat, "top") + 30 - 7.5 + "px";
     
     const GamePage = document.querySelector('#GamePage');
     GamePage.append(div);
@@ -102,59 +77,55 @@ function attack(key) {
     let count = 0;
     const shotSpeed = 10;
     const range = catStatus.range;
+
+    const divWidth = getStyleSlicePx(div, "width");
+    const divHeight = getStyleSlicePx(div, "height");
+    
     let direction = "Non";
     if(key === "ArrowLeft" || key === "ArrowRight") {
-        direction = isPressDown ? "D" : isPressUp ? "U" : "Non";
+        direction = directionOption.downIsPress ? "down" : directionOption.upIsPress ? "up" : "Non";
     };
     if(key === "ArrowDown" || key === "ArrowUp") {
-        direction = isPressLeft ? "L" : isPressRight ? "R" : "Non";
+        setStyleAddPx(div, "width", divHeight);
+        setStyleAddPx(div, "height", divWidth);
+        direction = directionOption.leftIsPress ? "left" : directionOption.rightIsPress ? "right" : "Non";
     };
+
     let subShotSpeed = 0;
-    switch (direction) {
-        case "R": subShotSpeed = shotSpeed*RkeyDownTime*0.001 > shotSpeed/2 ? shotSpeed/2 : shotSpeed*RkeyDownTime*0.001; break;
-        case "L": subShotSpeed = shotSpeed*LkeyDownTime*0.001 > shotSpeed/2 ? shotSpeed/2 : shotSpeed*LkeyDownTime*0.001;; break;
-        case "U": subShotSpeed = shotSpeed*UkeyDownTime*0.001 > shotSpeed/2 ? shotSpeed/2 : shotSpeed*UkeyDownTime*0.001;; break;
-        case "D": subShotSpeed = shotSpeed*DkeyDownTime*0.001 > shotSpeed/2 ? shotSpeed/2 : shotSpeed*DkeyDownTime*0.001;; break;
-        default: break;
+    if(direction !== "Non"){
+        const keyDonwTime = directionOption[direction+"keyDownTime"];
+        subShotSpeed = shotSpeed*keyDonwTime*0.001 > shotSpeed/2 ? shotSpeed/2 : shotSpeed*keyDonwTime*0.001;
     }
+
     let atk = setInterval(() => {
+
+        if(!div) return;
+        const divLeft = getStyleSlicePx(div, "left");
+        const divTop = getStyleSlicePx(div, "top");
+
         switch (key) {
-            case "ArrowRight":
-                div.style.left = parseInt(div.style.left.substring(0,div.style.left.length-1)) + shotSpeed + "px";
-                break;
-            case "ArrowLeft":
-                div.style.left = parseInt(div.style.left.substring(0,div.style.left.length-1)) - shotSpeed + "px";
-                break;
-            case "ArrowUp":
-                div.style.transform = "translate(-50%, -50%) rotate(-90deg)";
-                div.style.top = parseInt(div.style.top.substring(0,div.style.top.length-1)) - shotSpeed + "px";
-                break;
-            case "ArrowDown":
-                div.style.transform = "translate(-50%, -50%) rotate(90deg)";
-                div.style.top = parseInt(div.style.top.substring(0,div.style.top.length-1)) + shotSpeed + "px";
-                break;
+            case "ArrowRight":  div.style.left = divLeft + shotSpeed + "px"; div.direction = "right"; break;
+            case "ArrowLeft":   div.style.left = divLeft - shotSpeed + "px"; div.direction = "left"; break;
+            case "ArrowUp":     div.style.top = divTop - shotSpeed + "px"; div.direction = "up"; break;
+            case "ArrowDown":   div.style.top = divTop + shotSpeed + "px"; div.direction = "down"; break;
             default: break;
         }
         switch (direction) {
-            case "R":
-                div.style.left = parseInt(div.style.left.substring(0,div.style.left.length-1)) + subShotSpeed + "px";
-                break;
-            case "L":
-                div.style.left = parseInt(div.style.left.substring(0,div.style.left.length-1)) - subShotSpeed + "px";
-                break;
-            case "U":
-                div.style.top = parseInt(div.style.top.substring(0,div.style.top.length-1)) - subShotSpeed + "px";
-                break;
-            case "D":
-                div.style.top = parseInt(div.style.top.substring(0,div.style.top.length-1)) + subShotSpeed + "px";
-                break;
+            case "right": div.style.left = divLeft + subShotSpeed + "px"; break;
+            case "left": div.style.left = divLeft - subShotSpeed + "px"; break;
+            case "up": div.style.top = divTop - subShotSpeed + "px"; break;
+            case "down": div.style.top = divTop + subShotSpeed + "px"; break;
             default: break;
         }
+
         count += shotSpeed;
+
         if(count > range) {
             clearInterval(atk);
             div.remove();
         }
+
+        checkAttack(div, catStatus.atk, atk);
     }, 45);
 
     
@@ -162,6 +133,52 @@ function attack(key) {
     setTimeout(() => {
         canAttack = true;
     }, 1000 / fishDelay);
+
+}
+
+function checkCrash(a, b) {
+    
+    const mobLeft = getStyleSlicePx(a, "left");
+    const mobTop = getStyleSlicePx(a, "top");
+    const mobWidth = getStyleSlicePx(a, "width");
+    const mobHeight = getStyleSlicePx(a, "height");
+
+    const fishLeft = getStyleSlicePx(b, "left");
+    const fishTop = getStyleSlicePx(b, "top");
+    const fishWidth = getStyleSlicePx(b, "width");
+    const fishHeight = getStyleSlicePx(b, "height");
+
+    if((((fishLeft > mobLeft)&&(fishLeft < mobWidth + mobLeft)) || ((fishLeft + fishWidth > mobLeft)&&(fishLeft + fishWidth < mobWidth + mobLeft)))
+    && (((fishTop > mobTop)&&(fishTop < mobTop + mobHeight)) || ((fishTop + fishHeight > mobTop)&&(fishTop + fishHeight < mobTop + mobHeight)))){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function checkAttack(fish, atk) {
+
+    const objects = document.querySelectorAll(".mob");
+    for (let index = 0; index < objects.length; index++) {
+        const mob = objects[index];
+
+        if(checkCrash(mob,fish)){
+
+            mob.attributes.hp.value = mob.attributes.hp.value - atk;
+
+            switch (fish.direction) {
+                case "left":    setStyleAddPx(mob, "left", getStyleSlicePx(mob, "left") - 15); break;
+                case "right":   setStyleAddPx(mob, "left", getStyleSlicePx(mob, "left") + 15); break;
+                case "up":      setStyleAddPx(mob, "top", getStyleSlicePx(mob, "top") - 15); break;
+                case "down":    setStyleAddPx(mob, "top", getStyleSlicePx(mob, "top") + 15); break;
+                default : break;
+            }
+            
+            fish.remove();
+            break;
+        }
+            
+    }
 }
 
 
@@ -188,26 +205,24 @@ function setEvent(cs) {
         }
 
         if(cat){
+            let tempKey = key.toLowerCase();
+            if(tempKey === "a" || tempKey === "s" || tempKey === "d" || tempKey === "w"){
+                switch (tempKey) {
+                    case "a": tempKey = "left"; break;
+                    case "d": tempKey = "right"; break;
+                    case "w": tempKey = "up"; break;
+                    case "s": tempKey = "down"; break;
+                    default: break;
+                }
 
-            if(key.toLowerCase() === "a"){
-                if(isPressLeft) return;
-                isPressLeft = true;
-                setKeyPress("left", true);
-            }
-            if(key.toLowerCase() === "d"){
-                if(isPressRight) return;
-                isPressRight = true;
-                setKeyPress("right", true);
-            }
-            if(key.toLowerCase() === "w"){
-                if(isPressUp) return;
-                isPressUp = true;
-                setKeyPress("up", true);
-            }
-            if(key.toLowerCase() === "s"){
-                if(isPressDown) return;
-                isPressDown = true;
-                setKeyPress("down", true);
+                if(directionOption[tempKey+"IsPress"]) return;
+
+                directionOption[tempKey+"IsPress"] = true;
+                if(tempKey === "left" || tempKey === "up"){
+                    catMove(tempKey, "-");
+                }else{
+                    catMove(tempKey, "+");
+                }
             }
         }
 
@@ -224,25 +239,19 @@ function setEvent(cs) {
 
     document.addEventListener('keyup', (event)=>{
         const key = event.key;
-        // if(!(key==="Tab" || key.toLowerCase()==="m")) return;
         
         if(cat){
-            
-            if(key.toLowerCase() === "a"){
-                isPressLeft = false;
-                setKeyPress("left", false);
-            }
-            if(key.toLowerCase() === "d"){
-                isPressRight = false;
-                setKeyPress("right", false);
-            }
-            if(key.toLowerCase() === "w"){
-                isPressUp = false;
-                setKeyPress("up", false);
-            }
-            if(key.toLowerCase() === "s"){
-                isPressDown = false;
-                setKeyPress("down", false);
+            let tempKey = key.toLowerCase();
+            if(tempKey === "a" || tempKey === "s" || tempKey === "d" || tempKey === "w"){
+                switch (tempKey) {
+                    case "a": tempKey = "left"; break;
+                    case "d": tempKey = "right"; break;
+                    case "w": tempKey = "up"; break;
+                    case "s": tempKey = "down"; break;
+                    default: break;
+                }
+                directionOption[tempKey+"IsPress"] = false;
+                clearInterval(directionOption[tempKey + "Interval"]);
             }
         }
 
@@ -251,6 +260,60 @@ function setEvent(cs) {
         }
     
     });    
+}
+
+export class MobEvent {
+    
+    constructor(id) {
+    this.id = id;
+    this.interval = null;
+    }
+
+    move = ()=>{
+    
+        this.interval = setInterval(() => {
+            const speed = 2;
+            this.mob = document.getElementById(this.id);
+            let cat = document.querySelector('#cat');
+
+            if(!cat) return;
+
+            if(checkCrash(cat, this.mob)){
+                if(cat.classList.contains("hit")) return;
+                const hps = document.querySelectorAll(".hp");
+                if(hps.length === 1){
+                    alert("gameover");
+                    clearInterval(this.interval);
+                }
+
+                cat.classList.toggle("hit");
+                setTimeout(() => {
+                    cat.classList.toggle("hit");
+                }, 2000);
+                hps[0].remove();
+            }
+
+            const cLeft = parseFloat(cat.style.left.replace("px", ""));
+            const cTop = parseFloat(cat.style.top.replace("px", ""));
+            const mLeft = parseFloat(this.mob.style.left.replace("px", ""));
+            const mTop = parseFloat(this.mob.style.top.replace("px", ""));
+
+            if(mLeft > cLeft + 2 * speed) this.mob.style.left = (mLeft - 2 * speed) + "px";
+            if(mLeft < cLeft - 2 * speed) this.mob.style.left = (mLeft + 2 * speed) + "px";
+            if(mTop > cTop + 2 * speed) this.mob.style.top = (mTop - 2 * speed) + "px";
+            if(mTop < cTop - 2 * speed) this.mob.style.top = (mTop + 2 * speed) + "px";
+
+            if(this.mob.attributes.hp.value < 0) {
+                this.mob.remove();
+                clearInterval(this.interval);
+            }
+
+        }, 45);
+    }
+
+    stop = ()=>{
+        clearInterval(this.interval);
+    }
 }
 
 export default setEvent;

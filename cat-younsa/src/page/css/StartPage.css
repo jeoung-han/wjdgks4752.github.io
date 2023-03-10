@@ -1,6 +1,6 @@
 .page-container{
     box-sizing: border-box;
-    padding: 30px 0;
+    padding: 60px 0 0 0;
 
     width: 100%;
     height: 100%;
@@ -8,14 +8,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 40px;
 }
 
 #title{
     display: flex;
     flex-direction: column;
-    width: 350px;
-    height: 50%;
+    width: 400px;
+    height: 40%;
     justify-content: center;
+    background: url("../../img/logo.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
 }
 
 #title > div{
@@ -37,22 +41,52 @@
 }
 
 #switcing-section > div > button{
-    width: 300px;
+    margin-top: 30px;
+    width: 150px;
     height: 50px;
+    border-radius: 40px;
+    /* background-color: var(--yellow); */
+    background: linear-gradient(to bottom, var(--yellow), rgb(255,153,36));
+    border: 3px solid var(--blue);;
+    border-bottom: 6px solid var(--blue);
+    color: var(--blue);
+    font-size: 1em;
+    font-weight: 600;
+    font-family: "NeoDunggeunmoPro-Regular";
+    letter-spacing: 5px;
 }
 
 #switcing-section > div > label{
-    width: 300px;
+    width: 350px;
     display: flex;
     gap: 10px;
     height: 30px;
+    align-items: flex-end;
 }
 
 #switcing-section > div > label > p{
-    width: 80px;
+    width: 100px;
     height: 20px;
+    color: var(--yellow);
+    text-shadow: -1px 0 var(--blue), 0 1px var(--blue), 1px 0 var(--blue), 0 -1px var(--blue)
+    ,-2px 0 var(--blue), 0 2px var(--blue), 2px 0 var(--blue), 0 -2px var(--blue)
+    ,-2.5px 0 var(--blue), 0 2.5px var(--blue), 2.5px 0 var(--blue), 0 -2.5px var(--blue);
+    font-size: 1.2em;
+    vertical-align: bottom;
 }
 
 #switcing-section > div > label > input{
     flex-grow: 1;
+    background: none;
+    border: none;
+    border-bottom: 2px solid var(--blue);
+    height: 30px;
+    outline: none;
+}
+
+#switcing-section > #btn-box > button{
+    margin-top: 10px;
+    width: 200px;
+    height: 60px;
+    font-size: 1.4em;
 }

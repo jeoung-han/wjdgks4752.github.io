@@ -18,6 +18,12 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+@font-face {
+    font-family: 'NeoDunggeunmoPro-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/NeoDunggeunmoPro-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
@@ -28,6 +34,10 @@ body *{
 }
 body {
 	line-height: 1;
+    font-family: "NeoDunggeunmoPro-Regular";
+    --brown : rgba(35, 24, 21, 1);
+    --yellow : rgb(255, 239, 0);
+    --blue : rgb(26, 0, 133);
 }
 ol, ul {
 	list-style: none;

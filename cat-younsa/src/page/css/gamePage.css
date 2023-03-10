@@ -60,9 +60,11 @@
 }
 
 .hp{
-    width: 25px;
-    height: 25px;
-    border: 1px solid red;
+    width: 40px;
+    height: 40px;
+    /* border: 1px solid red; */
+    background: url(../../img/hp.png);
+    background-size: 100% 100%;
 }
 
 .hp.half{
@@ -80,10 +82,12 @@
 }
 
 .fish{
-    width: 30px;
+    width: 40px;
     height: 15px;
-    transform: translate(-50%, -50%);
+    /* background: url("../../img/멸치.png"); */
     background-color: blue;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 #status-menu > #status-header{
@@ -92,10 +96,16 @@
     align-items: flex-end;
 }
 
+#status-menu > #status-header > div:nth-of-type(1){
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
 #status-menu > #status-box{
+    padding: 40px 0 20px 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     justify-content: space-between;
 }
 
@@ -111,17 +121,56 @@
     width: 65%;
     justify-content: space-between;
     align-items: center;
-
-    border: 1px solid red;
 }
 
 .status-box{
     width: 20px;
     height: 20px;
+    background-color: red;
+    border: 1px solid red;
+}
+
+.status-box.blanck{
+    width: 20px;
+    height: 20px;
+    background: none;
     border: 1px solid red;
 }
 
 #status-menu > #item-list-box{
+    padding: 20px 0 ;
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+#item-list-box > div{
+    width: 25px;
+    height: 25px;
+    border: 1px solid cadetblue;
+}
+
+.mob{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: black;
+}
+
+#cat.hit{
+    animation-name: hitting;
+    animation-duration: 0.2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes hitting{
+    from {
+        opacity: 100%;
+    }
+
+    to {
+        opacity: 0%;
+    }
 }
