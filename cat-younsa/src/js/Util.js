@@ -70,12 +70,19 @@ function attack(key) {
     div.style.position = "absolute";
     div.style.left = getStyleSlicePx(cat, "left") + 30 - 7.5 + "px";
     div.style.top = getStyleSlicePx(cat, "top") + 30 - 7.5 + "px";
+
+    switch (key) {
+        case "ArrowRight": div.classList.add("r"); break;
+        case "ArrowUp": div.classList.add("u"); break;
+        case "ArrowDown": div.classList.add("d"); break;
+        default: break;
+    }
     
     const GamePage = document.querySelector('#GamePage');
     GamePage.append(div);
 
     let count = 0;
-    const shotSpeed = 10;
+    const shotSpeed = 15;
     const range = catStatus.range;
 
     const divWidth = getStyleSlicePx(div, "width");
@@ -274,8 +281,9 @@ export class MobEvent {
         this.interval = setInterval(() => {
             const speed = 2;
             this.mob = document.getElementById(this.id);
-            let cat = document.querySelector('#cat');
+            if(!this.mob) return;
 
+            let cat = document.querySelector('#cat');
             if(!cat) return;
 
             if(checkCrash(cat, this.mob)){
@@ -304,8 +312,8 @@ export class MobEvent {
             if(mTop < cTop - 2 * speed) this.mob.style.top = (mTop + 2 * speed) + "px";
 
             if(this.mob.attributes.hp.value < 0) {
-                this.mob.remove();
                 clearInterval(this.interval);
+                this.mob.remove();
             }
 
         }, 45);

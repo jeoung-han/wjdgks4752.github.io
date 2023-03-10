@@ -84,10 +84,28 @@
 .fish{
     width: 40px;
     height: 15px;
-    /* background: url("../../img/멸치.png"); */
-    background-color: blue;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+}
+
+.fish::before {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 15px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 2;
+    background: url("../../img/멸치.png") no-repeat;
+    background-size: contain;
+}
+.r.fish::before {
+    transform: translate(-50%,-50%) scaleX(-1);
+}
+.u::before{
+    transform: translate(-50%,-50%) rotate(90deg);
+}
+.d::before{
+    transform: translate(-50%,-50%) rotate(-90deg);
 }
 
 #status-menu > #status-header{
