@@ -1,28 +1,15 @@
 import './App.css';
-import StartPage from './page/StartPage';
-import GamePage from './page/GamePage';
+import './css/main.css';
 import React, { useState } from "react";
+import Game from "./component/game";
 
 function App() {
-
-  const [page, setPage] = useState("startPage");
-
-  let pageObject = null;
-  switch (page) {
-    case "gamePage":
-      pageObject = <GamePage/>;
-      break;
-
-    default:
-      pageObject = <StartPage setGamePage={()=>{setPage("gamePage")}}/>;
-      break;
-  }
 
   return (
     <div className="App">
       <div id="back-ground">
         <div id="game-container">
-          {pageObject}
+
         </div>
       </div>
     </div>
